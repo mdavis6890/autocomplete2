@@ -1,0 +1,23 @@
+{
+  "name": "autocomplete",
+  "main": "app.js",
+  "authors": [
+    "Michael Davis <mdavis6890@gmail.com>"
+  ],
+  "description": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.6",
+    "angular-material": "^1.1.5",
+    "angular-route": "^1.6.6",
+    "html5-boilerplate": "^6.0.1"
+  }
+}
