@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 
-sudo yum update -y
-sudo yum install memcached
-sudo systemctl enable memcached
-sudo systemctl enable memcached
-sudo systemctl start memcached
+curl -sL https://rpm.nodesource.com/setup_8.x | bash -
+yum update -y
+yum install -y memcached git nodejs
 
-sudo yum install git
-sudo curl -sL https://rpm.nodesource.com/setup_8.x | bash -
-sudo yum install -y nodejs
+systemctl enable memcached
+systemctl start memcached
 
 cd /opt
-sudo git clone https://github.com/mdavis6890/autocomplete2.git
+git clone https://github.com/mdavis6890/autocomplete2.git
 
 cd /opt/autocomplete2
 npm install
 
-cat <<EOF > print.sh
+cd /tmp
+cat <<EOF > node.service
 [Unit]
 Description=Node.js Example Server
 #Requires=After=mysql.service       # Requires the mysql service to run first
@@ -39,3 +37,7 @@ Environment=NODE_ENV=production PORT=80
 [Install]
 WantedBy=multi-user.target
 EOF
+
+mv node.service /etc/systemd/system/
+systemctl enable node
+systemctl start node

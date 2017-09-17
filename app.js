@@ -37,9 +37,15 @@ app.get('/api/:search', (req, res, next) => {
           return;
         }
         if (value) {
-          console.log(value.toString('utf-8'))
-          res.status(200).send(value.toString('utf-8'));
-          return;
+            const names = value.toString('utf-8')
+            //console.log()
+            res.set({
+              'Content-Length': names.length,
+              'Cache-Control': 'public',
+              'Cache-Control': 'max-age=86400'
+            });
+            res.status(200).json(names);
+            return;
         }
         console.log(search)
 
@@ -52,8 +58,13 @@ app.get('/api/:search', (req, res, next) => {
             return names;
         })
         .then((names) => {
+            res.set({
+              'Content-Length': names.length,
+              'Cache-Control': 'public',
+              'Cache-Control': 'max-age=86400'
+            });
             res.status(200)
-                .send(names)
+                .json(names)
                 .end();
         })
     });
