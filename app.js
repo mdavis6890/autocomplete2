@@ -41,10 +41,11 @@ app.get('/api/:search', (req, res, next) => {
             //console.log()
             res.set({
               'Content-Length': names.length,
+              'Content-Type': 'application/json',
               'Cache-Control': 'public',
               'Cache-Control': 'max-age=86400'
             });
-            res.status(200).json(names);
+            res.status(200).send(names);
             return;
         }
         console.log(search)
@@ -60,11 +61,12 @@ app.get('/api/:search', (req, res, next) => {
         .then((names) => {
             res.set({
               'Content-Length': names.length,
+              'Content-Type': 'application/json',
               'Cache-Control': 'public',
               'Cache-Control': 'max-age=86400'
             });
             res.status(200)
-                .json(names)
+                .send(names)
                 .end();
         })
     });
