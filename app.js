@@ -21,16 +21,7 @@ const memjs = require('memjs');
 
 const app = express();
 
-// [START client]
-// Environment variables are defined in app.yaml.
-//var MEMCACHE_URL = null
-//
-//if (process.env.USE_GAE_MEMCACHE) {
-//    MEMCACHE_URL = `${process.env.GAE_MEMCACHE_HOST}:${process.env.GAE_MEMCACHE_PORT}`;
-//} else {
-//
-//}
-const MEMCACHE_URL = '104.198.232.129:11211';
+const MEMCACHE_URL = 'localhost:11211';
 console.log(`MEMCACHE_URL: ${MEMCACHE_URL}`)
 const mc = memjs.Client.create(MEMCACHE_URL);
 // [END client]
