@@ -42,8 +42,7 @@ app.get('/api/:search', (req, res, next) => {
             res.set({
               'Content-Length': names.length,
               'Content-Type': 'application/json',
-              'Cache-Control': 'public',
-              'Cache-Control': 'max-age=86400'
+              'Cache-Control': 'public, max-age=86400'
             });
             res.status(200).send(names);
             return;
@@ -62,8 +61,7 @@ app.get('/api/:search', (req, res, next) => {
             res.set({
               'Content-Length': names.length,
               'Content-Type': 'application/json',
-              'Cache-Control': 'public',
-              'Cache-Control': 'max-age=86400'
+              'Cache-Control': 'public, max-age=86400'
             });
             res.status(200)
                 .send(names)
