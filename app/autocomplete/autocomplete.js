@@ -39,17 +39,17 @@
     function querySearch (query) {
       var results = query ? self.states.filter( createFilterFor(query) ) : self.states,
           deferred;
-      if (self.simulateQuery) {
+//      if (self.simulateQuery) {
 //        deferred = $q.defer();
 //        $timeout(function () { deferred.resolve( results ); }, Math.random() * 1000, false);
-        return $http.get('http://localhost:8080/api/' + query).then(function(data){
+        return $http.get('https://strange-passage-420.appspot.com/api/' + query).then(function(data){
                 console.log(data); // I've got the data here. All fine.
                 return data.data;
             });
 //         return deferred.promise;
-      } else {
-        return results;
-      }
+//      } else {
+//        return results;
+//      }
     }
 
     function searchTextChange(text) {

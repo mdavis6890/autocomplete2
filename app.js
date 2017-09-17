@@ -17,27 +17,56 @@
 
 // [START app]
 const express = require('express');
+const memjs = require('memjs');
 
 const app = express();
 
+// [START client]
+// Environment variables are defined in app.yaml.
+//var MEMCACHE_URL = null
+//
+//if (process.env.USE_GAE_MEMCACHE) {
+//    MEMCACHE_URL = `${process.env.GAE_MEMCACHE_HOST}:${process.env.GAE_MEMCACHE_PORT}`;
+//} else {
+//
+//}
+const MEMCACHE_URL = '104.198.232.129:11211';
+console.log(`MEMCACHE_URL: ${MEMCACHE_URL}`)
+const mc = memjs.Client.create(MEMCACHE_URL);
+// [END client]
+
+
 app.use(express.static('app'))
 
-app.get('/api/:search', (req, res) => {
-  const search = req.params.search;
+app.get('/api/:search', (req, res, next) => {
+    const search = req.params.search.toString();
+    mc.get(search, (err, value) => {
+        if (err) {
+          next(err);
+          return;
+        }
+        if (value) {
+          console.log(value.toString('utf-8'))
+          res.status(200).send(value.toString('utf-8'));
+          return;
+        }
+        console.log(search)
 
-  getNames(search)
-  .then((names) => {
-    res.status(200)
-        .send(names)
-        .end();
-    })
+        getNames(search)
+        .then((names) => {
+            console.log("Cache Miss.");
+            console.log(names);
+            console.log(search)
+            mc.set(search, names, {expires:86400});
+            return names;
+        })
+        .then((names) => {
+            res.status(200)
+                .send(names)
+                .end();
+        })
+    });
 });
-
-function test (search) {
-    return search
-}
-
-
 
 let job;
 
@@ -55,14 +84,13 @@ function getNames (search) {
     });
 
     // The SQL query to run, e.g. "SELECT * FROM publicdata.samples.natality LIMIT 5;"
-    const sqlQuery = "SELECT name as value, name as display FROM test1.products where substr(name, 0, @slen) = @search LIMIT 5;";
+    const sqlQuery = "SELECT name as value, name as display FROM test1.products where lower(substr(name, 0, @slen)) = lower(@search) LIMIT 10;";
 
     // Query options list: https://cloud.google.com/bigquery/docs/reference/v2/jobs/query
     const options = {
       query: sqlQuery,
       useLegacySql: false, // Use standard SQL syntax for queries.
       parameterMode: "NAMED",
-      maxResults: 5,
       queryParameters: [
         {
           "name": "search",
@@ -107,27 +135,10 @@ function getNames (search) {
         return job.getQueryResults();
       })
       .then((results) => {
-        return results[0]
+        console.log(results)
+        return JSON.stringify(results[0])
       })
-//      .then((results) => {
-//        const rows = results[0];
-//        console.log('Rows:');
-//        rows.forEach((row) => console.log(row));
-//      })
-//      .catch((err) => {
-//        console.error('ERROR:', err);
-//      });
-
-//      return "names"
 }
-
-
-
-
-
-
-
-
 
 // Start the server
 const PORT = process.env.PORT || 8080;
